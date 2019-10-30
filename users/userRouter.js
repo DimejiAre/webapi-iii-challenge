@@ -1,24 +1,44 @@
 const express = require('express');
-const db = require('./userDb');
+const userDb = require('./userDb');
+const postDb = require('../posts/postDb');
 
 const router = express.Router();
 
-router.post('/', [validateUser, validatePost], (req, res) => {
-
+router.post('/', [validateUser], (req, res) => {
+    const user = req.body;
+    userDb.insert(user)
+        .then(createdUser => {
+            res.status(200).json(createdUser)
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: "There was an error while saving the user to the database " + err
+            })
+        })
 });
 
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts', [validateUserId, validatePost], (req, res) => {
+    const post = req.body;
 
+    postDb.insert(post)
+        .then(createdPost => {
+            res.status(200).json(createdPost)
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: "There was an error while saving the post to the database " + err
+            })
+        })
 });
 
 router.get('/', (req, res) => {
-    db.get()
+    userDb.get()
         .then( users => {
             res.json(users)
         })
         .catch(err => {
             res.status(500).json({
-                error: "The post information could not be retrieved. " + err
+                error: "The user information could not be retrieved. " + err
             })
         })
 });
@@ -27,8 +47,18 @@ router.get('/:id', [validateUserId], (req, res) => {
     res.status(200).json(req.user)
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', [validateUserId], (req, res) => {
+    const id = req.params.id;
 
+    userDb.getUserPosts(id)
+        .then(posts => {
+            res.status(200).json(posts)
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: "The post information could not be retrieved. " + err
+            })
+        })
 });
 
 router.delete('/:id', (req, res) => {
@@ -44,7 +74,7 @@ router.put('/:id', (req, res) => {
 function validateUserId(req, res, next) {
     const id = req.params.id;
 
-    db.getById(id)
+    userDb.getById(id)
         .then(user => {
             if(user){
                 req.user = user
