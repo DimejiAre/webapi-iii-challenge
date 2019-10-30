@@ -61,12 +61,37 @@ router.get('/:id/posts', [validateUserId], (req, res) => {
         })
 });
 
-router.delete('/:id', (req, res) => {
-
+router.delete('/:id', [validateUserId], (req, res) => {
+    const id = req.params.id;
+    
+    userDb.remove(id)
+        .then(response => {
+            res.status(200).json({
+                message: `${response} user deleted`
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: "The user could not be removed " + err
+            })
+        })
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', [validateUserId, validateUser], (req, res) => {
+    const id = req.params.id;
+    const user = req.body;
 
+    userDb.update(id, user)
+        .then(() => {
+            userDb.getById(id).then(updatedUser => {
+                res.status(200).json(updatedUser)
+            })
+        })
+        .catch(() => {
+                res.status(500).json({
+                    error: "There was an error while saving the user to the database"
+                })
+            })
 });
 
 //custom middleware
