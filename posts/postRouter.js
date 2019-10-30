@@ -21,7 +21,7 @@ router.get('/:id', [validatePostId], (req, res) => {
 
 router.delete('/:id', [validatePostId], (req, res) => {
     const id = req.params.id;
-    
+
     postDb.remove(id)
         .then(data => {
             res.status(200).json({
@@ -46,10 +46,10 @@ router.put('/:id', [validatePostId], (req, res) => {
             })
         })
         .catch(() => {
-                res.status(500).json({
-                    error: "There was an error while saving the post to the database"
-                })
+            res.status(500).json({
+                error: "There was an error while saving the post to the database"
             })
+        })
 });
 
 // custom middleware
@@ -58,7 +58,7 @@ function validatePostId(req, res, next) {
     const id = req.params.id;
     postDb.getById(id)
         .then(data => {
-            if(data){
+            if (data) {
                 req.post = data
                 next()
             }
@@ -68,11 +68,11 @@ function validatePostId(req, res, next) {
                 })
             }
         })
-        .catch( err => {
+        .catch(err => {
             res.status(500).json({
                 error: "Post information could not be retrieved " + err
             })
         })
-};
+}
 
 module.exports = router;

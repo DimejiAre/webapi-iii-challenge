@@ -26,14 +26,14 @@ router.post('/:id/posts', [validateUserId, validatePost], (req, res) => {
         })
         .catch(err => {
             res.status(500).json({
-                error: "There was an error while saving the post to the database " + err
+                error: "There was an error while saving the user to the database " + err
             })
         })
 });
 
 router.get('/', (req, res) => {
     userDb.get()
-        .then( users => {
+        .then(users => {
             res.json(users)
         })
         .catch(err => {
@@ -56,14 +56,14 @@ router.get('/:id/posts', [validateUserId], (req, res) => {
         })
         .catch(err => {
             res.status(500).json({
-                error: "The post information could not be retrieved. " + err
+                error: "The user information could not be retrieved. " + err
             })
         })
 });
 
 router.delete('/:id', [validateUserId], (req, res) => {
     const id = req.params.id;
-    
+
     userDb.remove(id)
         .then(response => {
             res.status(200).json({
@@ -88,10 +88,10 @@ router.put('/:id', [validateUserId, validateUser], (req, res) => {
             })
         })
         .catch(() => {
-                res.status(500).json({
-                    error: "There was an error while saving the user to the database"
-                })
+            res.status(500).json({
+                error: "There was an error while saving the user to the database"
             })
+        })
 });
 
 //custom middleware
@@ -101,7 +101,7 @@ function validateUserId(req, res, next) {
 
     userDb.getById(id)
         .then(user => {
-            if(user){
+            if (user) {
                 req.user = user
                 next()
             } else {
@@ -112,14 +112,14 @@ function validateUserId(req, res, next) {
         })
         .catch(err => {
             res.status(500).json({
-                error: "The post information could not be retrieved. " + err
+                error: "The user information could not be retrieved. " + err
             })
         })
 }
 
 function validateUser(req, res, next) {
-    if(Object.keys(req.body).length > 0){
-        if(Object.keys(req.body).includes('name')){
+    if (Object.keys(req.body).length > 0) {
+        if (Object.keys(req.body).includes('name')) {
             next()
         } else {
             res.status(400).json({
@@ -135,8 +135,8 @@ function validateUser(req, res, next) {
 }
 
 function validatePost(req, res, next) {
-    if(Object.keys(req.body).length > 0){
-        if(Object.keys(req.body).includes('text')){
+    if (Object.keys(req.body).length > 0) {
+        if (Object.keys(req.body).includes('text')) {
             next()
         } else {
             res.status(400).json({
