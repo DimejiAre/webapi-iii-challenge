@@ -5,13 +5,14 @@ const posts = require('./posts/postRouter');
 
 const server = express();
 
+server.use(express.static(__dirname + '/client/build'))
 server.use(express.json());
 server.use(logger);
 server.use('/api/users', users)
 server.use('/api/posts', posts)
 
 server.get('/', (req, res) => {
-  res.send(`<h2>Let's write some middleware!</h2>`)
+  res.sendFile(__dirname + '/client/build/index.html')
 });
 
 //custom middleware
