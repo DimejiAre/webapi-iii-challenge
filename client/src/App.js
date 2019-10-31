@@ -7,6 +7,8 @@ const baseUrl = process.env.NODE_ENV === 'development'
   ? 'http://localhost:4000'
   : ''
 
+const baseUrl = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API : '';
+
 function App() {
   const [users, setUsers] = useState([]);
 
